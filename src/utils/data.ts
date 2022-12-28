@@ -13,11 +13,21 @@ export function generateData(count: number) {
   const startBirthDate = Date.parse('1/1/1975');
   const endBirthDate = Date.parse('1/1/1992');
 
+  function addLeadingZero(number: number) {
+    return number.toString().padStart(2, '0');
+  }
+
   for (i = 0; i < count; i += 1) {
     const birthDate = new Date(startBirthDate + Math.floor(
       (random() * (endBirthDate - startBirthDate)) / 10,
     ));
     birthDate.setHours(12);
+
+    const day = addLeadingZero(birthDate.getDate());
+    const month = addLeadingZero(birthDate.getMonth() + 1); // getMonth() retorna o mês de 0 a 11, por isso é preciso adicionar 1
+    const year = birthDate.getFullYear();
+
+    const formattedBirthDate = `${day}/${month}/${year}`;
 
     const nameIndex = random();
     const item = {
@@ -25,7 +35,7 @@ export function generateData(count: number) {
       firstName: names[nameIndex],
       lastName: surnames[random()],
       gender: gender[Math.floor(nameIndex / 5)],
-      birthDate,
+      formattedBirthDate,
     };
     items.push(item);
   }

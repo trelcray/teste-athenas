@@ -10,6 +10,8 @@ import {
 import { useDebounce } from "../hooks/UseDebounce";
 import { MagnifyingGlass, Pencil, PlusCircle, Trash } from "phosphor-react";
 import "../scss/table.scss";
+import { useNavigate } from "react-router-dom";
+import { Modal } from "./Modal";
 
 interface Props {}
 
@@ -18,7 +20,7 @@ type TableData = {
   firstName: string;
   lastName: string;
   gender: string;
-  birthDate: Date;
+  formattedBirthDate: string;
 };
 
 export function Table({}: Props) {
@@ -28,14 +30,20 @@ export function Table({}: Props) {
   const [rowsPerPage, setRowsPerPage] = useState(5); // Limite de linhas por página
   const [totalPages, setTotalPages] = useState(1); // Número total de páginas
   const [searchTerm, setSearchTerm] = useState(""); // Termo de pesquisa
-  const [handleSortColumn, setHandleSortColumn] = useState(""); // Coluna de ordenação
-  const [sortDirection, setSortDirection] = useState(""); // Direção de ordenação (ascendente ou descendente)
+  const [handleSortColumn, setHandleSortColumn] = useState("id"); // Coluna de ordenação
+  const [sortDirection, setSortDirection] = useState("asc"); // Direção de ordenação (ascendente ou descendente)
   const debouncedSearchTerm = useDebounce(searchTerm); // Termo de pesquisa com debounced
+  const [show, setShow] = useState(false);
+
+  const navigate = useNavigate();
 
   // Manipulador de cliques para atualizar o número da página atual
   const handlePageClick = (page: number) => {
     setCurrentPage(page);
   };
+
+  // gera dados aleatórios pasando a quantidade pelo parametro
+  const TableData = generateData(50);
 
   // Filtra os dados da tabela com base no número da página atual e no limite de linhas por página
   const startIndex = (currentPage - 1) * rowsPerPage;
@@ -57,11 +65,11 @@ export function Table({}: Props) {
 
   // mapear os nomes das colunas da tabela para os nomes das propriedades do objeto TableData em um objeto de mapeamento e usar esse objeto para acessar as propriedades de forma mais segura:
   const columnMapping: { [key: string]: keyof TableData } = {
-    ID: "id",
-    "First Name": "firstName",
-    "Last Name": "lastName",
-    Gender: "gender",
-    "Birth Date": "birthDate",
+    "id": "id",
+    "firstName": "firstName",
+    "lastName": "lastName",
+    "gender": "gender",
+    "formattedBirthDate": "formattedBirthDate",
   };
 
   // Classificar os dados da tabela com base na coluna de ordenação e na direção de ordenação
@@ -80,7 +88,6 @@ export function Table({}: Props) {
       return 0;
     });
   }
-
   // Criar uma lista de links de página sequenciais mais próximos da página atual
   let pageLinks = [];
   for (let i = 1; i <= totalPages; i++) {
@@ -113,7 +120,6 @@ export function Table({}: Props) {
   }
 
   useEffect(() => {
-    const TableData = generateData(50);
     setData(TableData);
   }, []);
 
@@ -148,8 +154,8 @@ export function Table({}: Props) {
   return (
     <div>
       <div className="flex m-1">
-        <Button className="flex gap-1" variant="success">
-          <PlusCircle size={20}/>
+        <Button className="d-flex gap-1" variant="success" onClick={() => navigate("/AddPerson")}>
+          <PlusCircle className="mt" size={20} />
           Person
         </Button>
         <InputGroup className="d-flex flex-row-reverse my-1">
@@ -167,13 +173,13 @@ export function Table({}: Props) {
       </div>
       <BTable striped bordered hover responsive variant="light">
         <thead>
-          <tr>
+          <tr className="cursor-pointer">
             <th onClick={() => handleSort("id")}>ID</th>
             <th onClick={() => handleSort("firstName")}>First Name</th>
             <th onClick={() => handleSort("lastName")}>Last Name</th>
             <th onClick={() => handleSort("gender")}>Gender</th>
-            <th onClick={() => handleSort("birthDate")}>Birth Date</th>
-            <th onClick={() => handleSort("actions")}>Actions</th>
+            <th onClick={() => handleSort("formmatedBirthDate")}>Birth Date</th>
+            <th>Actions</th>
           </tr>
         </thead>
         <tbody>
@@ -184,7 +190,15 @@ export function Table({}: Props) {
                   <td>{row.firstName}</td>
                   <td>{row.lastName}</td>
                   <td>{row.gender}</td>
-                  <td>{new Date(row.birthDate).toLocaleDateString()}</td>
+                  <td>{new Date(row.formattedBirthDate).toLocaleDateString()}</td>
+                  <td className="td-width">
+                    <Button className="rounded btn-sm mx-2">
+                      <Pencil size={16} className="mb-1" onClick={() => setShow(true)} /> Edit
+                    </Button>
+                    <Button className="rounded btn-sm" variant="danger">
+                      <Trash size={16} className="mb-1" /> Delete
+                    </Button>
+                  </td>
                 </tr>
               ))
             : pageData.map((row) => (
@@ -193,9 +207,9 @@ export function Table({}: Props) {
                   <td>{row.firstName}</td>
                   <td>{row.lastName}</td>
                   <td>{row.gender}</td>
-                  <td>{new Date(row.birthDate).toLocaleDateString()}</td>
+                  <td>{row.formattedBirthDate}</td>
                   <td className="td-width">
-                    <Button className="rounded btn-sm mx-2">
+                    <Button className="rounded btn-sm mx-2" onClick={() => setShow(true)}>
                       <Pencil size={16} className="mb-1" /> Edit
                     </Button>
                     <Button className="rounded btn-sm" variant="danger">
@@ -249,6 +263,8 @@ export function Table({}: Props) {
           />
         </Pagination>
       </div>
+
+      <Modal show={show} setShow={setShow}/>
     </div>
   );
 }

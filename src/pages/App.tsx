@@ -1,12 +1,9 @@
-import { useEffect, useState } from "react";
 import { Table } from "../components/Table";
 
-const App = () => {
+export const App = () => {
   return (
-    <div>
+    <div className="mt-10">
       <Table/>
     </div>
   );
 };
-
-export default App;
