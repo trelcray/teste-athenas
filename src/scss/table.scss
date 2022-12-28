@@ -1,0 +1,38 @@
+.text-black {
+  color: black;
+}
+
+.search {
+  outline: none;
+}
+
+.search:hover,
+.search:focus {
+  border: solid 0.15rem;
+  border-color: #0dcaf0;
+}
+
+.flex {
+  display: flex;
+  justify-items: center;
+  align-items: center;
+}
+
+.cursor-pointer {
+  cursor: pointer;
+}
+
+.td-width {
+  width: 12rem;
+}
+
+.visibility {
+  display: none;
+}
+
+@media (min-width: 768px) { 
+  .visibility {
+    display: block;
+  }
+ }
+
