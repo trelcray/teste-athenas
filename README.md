@@ -2,7 +2,7 @@
 
 It's a project to demonstrate my skills for a junior developer job challenge.
 
-see the depoly at: https://crud-challenge-trelcray.vercel.app/
+see the depoly at: https://crud-challenge-athenas.vercel.app/
 
 ### consists of the following features:
 
