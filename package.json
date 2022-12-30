@@ -10,12 +10,14 @@
   },
   "dependencies": {
     "@popperjs/core": "^2.11.6",
+    "@reduxjs/toolkit": "^1.9.1",
     "bootstrap": "^5.2.3",
     "devextreme": "22.2.3",
     "phosphor-react": "^1.4.1",
     "react": "^18.2.0",
     "react-bootstrap": "^2.7.0",
     "react-dom": "^18.2.0",
+    "react-redux": "^8.0.5",
     "react-router-dom": "^6.6.1"
   },
   "devDependencies": {
